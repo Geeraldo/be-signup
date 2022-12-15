@@ -44,10 +44,12 @@ export const Register = async(req,res) => {
     })
     try {
         const value = await schema.validateAsync({ name: name, email: email, confPassword:confPassword ,password:password, });
+        const salt = await bcrypt.genSalt();
+        const hashPassword = await bcrypt.hash(value.password,salt)
         await Users.create({
             name:value.name,
             email:value.email,
-            password:value.password,
+            password:hashPassword,
             is_login:'1'
         });
         res.status(200).send({
