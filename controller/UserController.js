@@ -3,6 +3,9 @@ import bcrypt  from "bcrypt";
 import Joi from "joi";
 import passwordComplexity from 'joi-password-complexity'
 import EmailSender from "../services/Mail.js"
+import  Jwt  from "jsonwebtoken";
+import * as dotenv from "dotenv"
+dotenv.config()
 
 export const getAllUsers = async(req,res) => {
     try {
@@ -51,7 +54,7 @@ export const Register = async(req,res) => {
             name:value.name,
             email:value.email,
             password:hashPassword,
-            is_login: 1
+            is_login: 0
         });
         await EmailSender.sendMessage(
             email,
@@ -68,6 +71,45 @@ export const Register = async(req,res) => {
         })
     }
 
+}
 
+export const Login = async(req,res) => {
+    try {
+        const user = await Users.findAll({
+            where:{
+                email:req.body.email
+            }
+        });
+        const match = await bcrypt.compare(req.body.password, user[0].password)
+        if(!match) return res.status(400).send({
+            message:"Wrong Password"
+        })
+        const userId = user[0].id;
+        const name = user[0].name;
+        const email = user[0].email;
+        const accessToken = Jwt.sign({userId, name, email},process.env.ACCESS_TOKEN_SECRET,{
+            expiresIn: '30s'
+        })
+        const refreshToken = Jwt.sign({userId, name, email},process.env.REFRESH_TOKEN_SECRET,{
+            expiresIn:'1d'
+        });
+        await Users.update({
+            refresh_token:refreshToken,
+            is_login:1
+        },{
+            where:{
+                id:userId
+            }
+        });
+        res.cookie('refreshToken',refreshToken,{
+            httpOnly:true,
+            maxAge: 24 * 60 * 60 * 1000
+        });
+        res.status(200).send({ accessToken })
 
+    } catch (error) {
+        res.status(404).send({
+            message:"email or password invalid"
+        })
+    }
 }

@@ -1,7 +1,7 @@
 import express  from "express";
 import db from "./config/Database.js";
 import Users from "./models/User.js";
-import { Register,getAllUsers } from "./controller/UserController.js"
+import { Register,getAllUsers, Login } from "./controller/UserController.js"
 
 
 const app = express();
@@ -20,6 +20,7 @@ app.use("/", router);
 // Router.get('/users', UserController)
 router.get('/user', getAllUsers)
 router.post('/register', Register)
+router.post('/login', Login)
 
 app.listen(8000, () => console.log('running on 8000'))
 
