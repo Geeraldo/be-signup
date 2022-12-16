@@ -2,6 +2,7 @@ import Users from "../models/User.js";
 import bcrypt  from "bcrypt";
 import Joi from "joi";
 import passwordComplexity from 'joi-password-complexity'
+import EmailSender from "../services/Mail.js"
 
 export const getAllUsers = async(req,res) => {
     try {
@@ -22,8 +23,8 @@ export const Register = async(req,res) => {
         numeric: 1,
         symbol: 1,
         requirementCount: 6,
-      };
-    const schema = Joi.object({
+    };
+    const validation = Joi.object({
         name: Joi.string()
             .alphanum()
             .min(3)
@@ -32,7 +33,7 @@ export const Register = async(req,res) => {
             .messages({
                 "string.base": `Username should be a type of 'text'.`,
                 "string.empty": `Username cannot be an empty field.`,
-                "string.min": `Username should have a minimum length of 3.`,
+                "string.min": `Username should have a minimum length of 8.`,
                 "any.required": `Username is a required field.`,
             }),
         password: passwordComplexity(complexityOptions).required(),
@@ -43,15 +44,21 @@ export const Register = async(req,res) => {
             .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
     })
     try {
-        const value = await schema.validateAsync({ name: name, email: email, confPassword:confPassword ,password:password, });
+        const value = await validation.validateAsync({ name: name, email: email, confPassword:confPassword ,password:password, });
         const salt = await bcrypt.genSalt();
         const hashPassword = await bcrypt.hash(value.password,salt)
         await Users.create({
             name:value.name,
             email:value.email,
             password:hashPassword,
-            is_login:'1'
+            is_login: 1
         });
+        await EmailSender.sendMessage(
+            email,
+            'Sign Up Sucessfull',
+            'Sign Up',
+            `<h1> Hi ${email}, Congratulation Sign Up is successfull! </h1>`
+        )
         res.status(200).send({
             message:"Regsiter Successfull"
         })
