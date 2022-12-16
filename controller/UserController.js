@@ -18,7 +18,7 @@ export const getAllUsers = async(req,res) => {
     }
 }
 
-export const Register = async(req,res) => {
+export const SignUp = async(req,res) => {
     const { name, email, password, confPassword} = req.body;
     const complexityOptions = {
         min: 8,

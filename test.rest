@@ -11,7 +11,9 @@ Content-Type: application/json
 GET http://localhost:8000/user
 
 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJsb2dpbmdlcmFsZG8iLCJlbWFpbCI6ImxhbnRhbmdnZXJhbGRvQGdtYWlsLmNvbSIsImlhdCI6MTY3MTE4Mjg0MywiZXhwIjoxNjcxMTgyODczfQ.a1MgKofDV8pGvZvyymS0D4pLKMZlkUvKjstkMYOv7AY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJsb2dpbmdlcmFsZG8iLCJlbWFpbCI6ImxhbnRhbmdnZXJhbGRvQGdtYWlsLmNvbSIsImlhdCI6MTY3MTE5NDQxNywiZXhwIjoxNjcxMTk0NDI3fQ.LhKkNKhHPJsBth36hKZLUt9VlFWzwERdwPkW3D1uIOA
+
+
 # login
 ###
 POST http://localhost:8000/login
