@@ -9,7 +9,9 @@ dotenv.config()
 
 export const getAllUsers = async(req,res) => {
     try {
-        const users = await Users.findAll();
+        const users = await Users.findAll({
+            attributes:['id','name','email']
+        });
         res.json(users);
     } catch (error) {
     console.log(error);
@@ -88,7 +90,7 @@ export const Login = async(req,res) => {
         const name = user[0].name;
         const email = user[0].email;
         const accessToken = Jwt.sign({userId, name, email},process.env.ACCESS_TOKEN_SECRET,{
-            expiresIn: '30s'
+            expiresIn: '10s'
         })
         const refreshToken = Jwt.sign({userId, name, email},process.env.REFRESH_TOKEN_SECRET,{
             expiresIn:'1d'
