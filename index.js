@@ -1,7 +1,7 @@
 import express  from "express";
 import db from "./config/Database.js";
 import Users from "./models/User.js";
-import { Register,getAllUsers, Login } from "./controller/UserController.js"
+import { Register,getAllUsers, Login, Logout } from "./controller/UserController.js"
 import { tokenVerify } from"./middleware/tokenVerify.js"
 import { refreshToken }  from"./middleware/refreshToken.js"
 import cookieParser from "cookie-parser";
@@ -24,6 +24,7 @@ router.get('/user', tokenVerify, getAllUsers)
 router.get('/refreshtoken', refreshToken)
 router.post('/register', Register)
 router.post('/login', Login)
+router.post('/logout', Logout)
 app.listen(8000, () => console.log('running on 8000'))
 
 
